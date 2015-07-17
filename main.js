@@ -40,17 +40,10 @@ balancedata = [
   }
   ]
 
-//
-// LABELS FIRST
-//
-  
-var label_margin = {top: 30, right: 0, bottom: 10, left: 50}, // set eventual SVG margins, box width, box height
-    label_width = 270 - label_margin.left - label_margin.right,
-    label_height = 500 - label_margin.top - label_margin.bottom;
 	
-var margin = {top: 30, right: 10, bottom: 10, left: 10}, // set eventual SVG margins, box width, box height
+var margin = {top: 30, right: 10, bottom: 10, left: 200}, // set eventual SVG margins, box width, box height
     width = 500 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 250 - margin.top - margin.bottom;
 
 var x = d3.scale.linear() // function to scale a domain to the predetermined width above
     .range([0, width]);
@@ -58,43 +51,13 @@ var x = d3.scale.linear() // function to scale a domain to the predetermined wid
 var y = d3.scale.ordinal() // function to create rows for data bars scaled to specified height
     .rangeRoundBands([0, height], .2);
 
-x.domain(d3.extent(data, function(d) { return d.value; })).nice(); // find extent of data in "value" field; scale to specified range above.
-y.domain(data.map(function(d) { return d.name; })); // for each name, "scale" to y-axis for rows
-	
-// Append SVG box for labels
-  
-var labels = d3.select("body").append("svg") 
-    .attr("width", label_width + label_margin.left + label_margin.right)
-    .attr("height", label_height + label_margin.top + label_margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + label_margin.left + "," + label_margin.top + ")")
-
-//add labels 
-labels.selectAll(".label")
-	.data(data)
-	.enter().append("rect")
-	.attr("class","label")
-	.attr("x", 0)
-	.attr("y", function(d) { return y(d.name); }) // bar y-position (uses function "y" from above to map to range)
-	.attr("width", label_width) // bar length using absolute value
-	.attr("height", y.rangeBand()) // bar width, using "y" function
-	
-labels.selectAll("text")
-	.data(data)
-	.enter().append("text")
-	.attr("class","labeltext")
-	.attr("x", 0)
-	.attr("y", function(d) { return y(d.name); }) // bar y-position (uses function "y" from above to map to range)
-    .attr("dy", y.rangeBand()/2)
-    .text(function(d) { return d.name});
-
-//
-// BAR CHART 
-//
-	
 var xAxis = d3.svg.axis() // axis function
     .scale(x)
     .orient("top");
+	
+var yAxis = d3.svg.axis() // y axis labels
+    .scale(y)
+    .orient("left")
 
 var tip = d3.tip() // tooltips function. must be called within svg.
   .attr('class', 'd3-tip')
@@ -102,6 +65,15 @@ var tip = d3.tip() // tooltips function. must be called within svg.
   .html(function(d) {
     return "<strong>"+ d.name +"</strong><br><span style='color:red'>" + d.value + "</span>";
   }) 
+	
+x.domain(d3.extent(data, function(d) { return d.value; })).nice(); // find extent of data in "value" field; scale to specified range above.
+y.domain(data.map(function(d) { return d.name; })); // for each name, "scale" to y-axis for rows
+
+
+//
+// BAR CHART 
+//
+
   
 // Append SVG box for bar chart with specified margin, width, and height. 
   
@@ -139,6 +111,10 @@ barchart.append("g")
 	.attr("x1", x(0))
 	.attr("x2", x(0))
 	.attr("y2", height);
+	
+barchart.append("g")
+	.attr("class", "ylabel")
+	.call(yAxis);
 	  
 //});
 

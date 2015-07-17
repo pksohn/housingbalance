@@ -48,6 +48,16 @@ h1 {font: 20px sans-serif}
   shape-rendering: crispEdges;
 }
 
+.ylabel text {
+  font: 10px sans-serif;
+}
+
+.ylabel path,
+.ylabel line {
+  fill: transparent;
+  shape-rendering: transparent;
+}
+
 .d3-tip {
   line-height: 1;
   font-weight: bold;
