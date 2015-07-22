@@ -1,46 +1,6 @@
-data = [
-  {
-    "name": "New Affordable Housing Built",
-    "value": 255
-  },
-  {
-    "name": "Acquisitions & Rehabs Completed",
-    "value": 0
-  },
-  {
-    "name": "Units Removed from Protected Status",
-    "value": 535
-  },
-  {
-    "name": "Total Entitled Affordable Units Permitted",
-    "value": 4
-  },
-  {
-    "name": "Planned RAD Units",
-    "value": 144
-  },
-  {
-    "name": "Net Affordable Housing Stock",
-    "value": -132
-  },
-  {
-    "name": "Total Net New Units Built",
-    "value": 372
-  },
-  {
-    "name": "Total Entitled Units",
-    "value": 39
-  }
-]
 
-balancedata = [
-  {
-    "name": "Housing Balance",
-    "value": -0.321
-  }
-  ]
+// set up SVG box independent of data
 
-	
 var margin = {top: 30, right: 10, bottom: 10, left: 200}, // set eventual SVG margins, box width, box height
     width = 500 - margin.left - margin.right,
     height = 250 - margin.top - margin.bottom;
@@ -59,15 +19,14 @@ var yAxis = d3.svg.axis() // y axis labels
     .scale(y)
     .orient("left")
 
-var tip = d3.tip() // tooltips function. must be called within svg.
+var tip = d3.tip() // tooltips function. must be called within csv function.
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
     return "<strong>"+ d.name +"</strong><br><span style='color:red'>" + d.value + "</span>";
   }) 
 	
-x.domain(d3.extent(data, function(d) { return d.value; })).nice(); // find extent of data in "value" field; scale to specified range above.
-y.domain(data.map(function(d) { return d.name; })); // for each name, "scale" to y-axis for rows
+
 
 
 //
@@ -84,10 +43,12 @@ var barchart = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 	.call(tip); //call tooltip function
  
-//eventually build out to call full csv file
-//d3.csv("Book2.csv", type, function(error, data) {
+// Load CSV
+d3.csv("HousingBalance.csv", type, function(error, data) {
 
-
+// x&y domains rely on data
+x.domain(d3.extent(data, function(d) { return d.value; })).nice(); // find extent of data in "value" field; scale to specified range above.
+y.domain(data.map(function(d) { return d.name; })); // for each name, "scale" to y-axis for rows
 
 //add bar chart functionality
 barchart.selectAll(".bar")
@@ -115,43 +76,10 @@ barchart.append("g")
 barchart.append("g")
 	.attr("class", "ylabel")
 	.call(yAxis);
+	  
+});
 
-
-
-	
-//});
-
-/* function type(d) {
+function type(d) {
   d.value = +d.value;
   return d;
-} */
-
-
-var mapwidth = 400,
-    mapheight = 400;
-
-var mapsvg = d3.select("body").append("svg")
-    .attr("width", mapwidth)
-    .attr("height", mapheight);
-	
-var projection = d3.geo.mercator()
-    .center([-122.419870,37.771700])
-    .scale(80000)
-    .translate([width * .6, height * .7]);
-	
-var path = d3.geo.path()
-    .projection(projection);
-
-d3.json("districts_v4.json", function(error, districts) {
-/* 	mapsvg.append("path")
-		.datum(topojson.feature(districts, districts.objects.districts2))
-		.attr("d", path);  */ 
-	  
-	mapsvg.selectAll(".districts2")
-		.data(topojson.feature(districts, districts.objects.districts2).features)
-		.enter().append("path")
-		.attr("class", function(d) { return "districts2 " + d.id; })
-		.attr("d", path);
-	
-	  console.log(districts)
-});
+}
