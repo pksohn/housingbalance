@@ -38,6 +38,7 @@ h1 {font: 20px sans-serif}
 }
 
 
+
 .districts2 {
   fill: orange;
   border-style: solid;
@@ -45,9 +46,13 @@ h1 {font: 20px sans-serif}
 }
 
 .districts2:hover {
-  fill: lightgray;
+  fill: darkorange;
   border-style: solid;
   border-width: 10px;
+}
+
+.bayarea_projundefined {
+  fill: lightgray;
 }
 
 .streets_project {

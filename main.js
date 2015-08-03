@@ -75,12 +75,22 @@ function generateMap() {
 		
 	var projection = d3.geo.mercator()
 		.center([-122.37,37.79])
-		.scale(170000);
+		.scale(120000);
 		
 	var path = d3.geo.path()
 		.projection(projection);
 	
 	// draw map
+
+ 	d3.json("bayarea_proj.json", function(error, bayarea) {
+		
+		mapsvg.selectAll(".bayarea_proj")
+			.data(topojson.feature(bayarea, bayarea.objects.bayarea_proj).features)
+			.enter().append("path")
+			.attr("class", function(d) { return "bayarea_proj" + d.id; })
+			.attr("d", path);
+		
+		});
 	
 	d3.json("districts_v4.json", function(error, districts) {
 			/* 	mapsvg.append("path")
@@ -98,15 +108,7 @@ function generateMap() {
 		console.log(districts)
 		});
 	
-/* 	d3.json("streets_project.json", function(error, streets) {
-		  
- 	mapsvg.selectAll(".streets_project")
-			.data(topojson.feature(streets, streets.objects.streets_project).features)
-			.enter().append("path")
-			.attr("class", function(d) { return "streets_project" + d.id; })
-			.attr("d", path); 
-		
-		}); */
+
 	  
 }
 
